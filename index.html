@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Values Discovery — Scaling Minds</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+--green:#1B4332;--green-mid:#2D6A4F;--green-light:#40916C;--green-muted:rgba(27,67,50,0.08);
+--gold:#B8860B;--gold-light:#D4A017;--gold-muted:rgba(184,134,11,0.12);
+--cream:#D4C5A9;--cream-light:#F5F0E8;--cream-bg:#FAF8F4;--cream-pale:#FAF7F2;
+--white:#FFFFFF;--text:#1a1a1a;--text-muted:#6b6b6b;--border:#e0dbd2;
+--shadow:0 2px 12px rgba(27,67,50,0.08);--shadow-lg:0 8px 32px rgba(27,67,50,0.12);
+--radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream-bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+.header{background:var(--green);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);}
+.header-left{display:flex;align-items:center;gap:14px;}
+.header-logo{height:44px;border-radius:4px;}
+.header h1{font-family:'DM Serif Display',serif;color:var(--cream-light);font-size:20px;font-weight:400;}
+.header-right{font-size:12px;color:var(--cream);opacity:0.6;}
+
+.container{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+
+.screen{display:none;animation:fadeUp 0.4s ease;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.intro-hero{text-align:center;padding:48px 0 32px;}
+.intro-icon{width:80px;height:80px;background:var(--gold-muted);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;border:2px solid var(--gold);}
+.intro-icon svg{width:36px;height:36px;color:var(--gold);}
+.intro-hero h2{font-family:'DM Serif Display',serif;font-size:32px;color:var(--green);margin-bottom:12px;line-height:1.2;}
+.intro-hero p{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:540px;margin:0 auto;}
+
+.intro-details{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin:24px 0 32px;}
+.intro-details h3{font-family:'DM Serif Display',serif;font-size:18px;color:var(--green);margin-bottom:14px;}
+.intro-details p{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:12px;}
+.intro-details p:last-child{margin-bottom:0;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:20px;}
+.detail-item{text-align:center;padding:16px 12px;background:var(--cream-bg);border-radius:10px;}
+.detail-num{font-family:'DM Serif Display',serif;font-size:24px;color:var(--gold);margin-bottom:4px;}
+.detail-label{font-size:12px;color:var(--text-muted);font-weight:500;}
+
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--green);color:var(--cream-light);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;}
+.btn-primary:hover{background:var(--green-mid);transform:translateY(-1px);box-shadow:var(--shadow);}
+.btn-center{text-align:center;}
+
+.progress-wrap{margin-bottom:32px;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.progress-label{font-size:13px;font-weight:600;color:var(--text-muted);}
+.progress-count{font-size:13px;color:var(--green);font-weight:700;}
+.progress-bar{height:6px;background:var(--cream);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:3px;transition:width 0.4s ease;}
+
+.q-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:36px 32px;box-shadow:var(--shadow);margin-bottom:24px;}
+.q-context{font-size:13px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;}
+.q-prompt{font-family:'DM Serif Display',serif;font-size:22px;color:var(--green);line-height:1.4;margin-bottom:28px;}
+
+.choice-btn{display:block;width:100%;text-align:left;padding:18px 22px;background:var(--cream-bg);border:2px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);line-height:1.6;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+.choice-btn:hover{border-color:var(--green-light);background:var(--white);transform:translateX(4px);}
+.choice-btn:active{transform:translateX(2px);}
+.choice-label{font-weight:600;color:var(--green);display:block;margin-bottom:2px;font-size:13px;letter-spacing:0.02em;}
+
+.results-header{text-align:center;padding:40px 0 32px;}
+.results-header h2{font-family:'DM Serif Display',serif;font-size:32px;color:var(--green);margin-bottom:8px;}
+.results-header p{font-size:15px;color:var(--text-muted);line-height:1.6;}
+
+.values-map-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:28px;box-shadow:var(--shadow);}
+.values-map-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--green);margin-bottom:4px;}
+.values-map-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;}
+
+canvas#valuesChart{max-width:480px;margin:0 auto;display:block;}
+
+.quadrant-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px;}
+.quadrant-card{padding:18px 20px;border-radius:12px;border:1px solid var(--border);}
+.quadrant-card.highlight{background:var(--gold-muted);border-color:var(--gold);}
+.quadrant-name{font-weight:700;font-size:14px;color:var(--green);margin-bottom:4px;}
+.quadrant-score{font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);margin-bottom:4px;}
+.quadrant-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+
+.top-values-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:28px;box-shadow:var(--shadow);}
+.top-values-card h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--green);margin-bottom:6px;}
+.top-values-card>p{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+
+.value-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--cream);}
+.value-row:last-child{border-bottom:none;}
+.value-rank{width:32px;height:32px;background:var(--green);color:var(--cream-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.value-rank.low{background:var(--cream);color:var(--text-muted);}
+.value-info{flex:1;}
+.value-name{font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px;}
+.value-def{font-size:12px;color:var(--text-muted);line-height:1.4;}
+.value-bar-wrap{width:120px;flex-shrink:0;}
+.value-bar-bg{height:8px;background:var(--cream);border-radius:4px;overflow:hidden;}
+.value-bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
+.value-bar-fill.high{background:var(--green);}
+.value-bar-fill.mid{background:var(--green-light);}
+.value-bar-fill.low{background:var(--cream);}
+
+.reflect-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:28px;box-shadow:var(--shadow);}
+.reflect-card h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--green);margin-bottom:6px;}
+.reflect-card>p{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+.reflect-q{padding:16px 20px;background:var(--cream-bg);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;margin-bottom:12px;font-size:14px;color:var(--text);line-height:1.6;}
+
+.tension-card{background:var(--green);border-radius:var(--radius);padding:32px;margin-bottom:28px;color:var(--cream-light);}
+.tension-card h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream-light);margin-bottom:6px;}
+.tension-card>p{font-size:13px;color:var(--cream);opacity:0.8;margin-bottom:20px;}
+.tension-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 20px;margin-bottom:12px;}
+.tension-pair{font-weight:600;font-size:14px;color:var(--gold-light);margin-bottom:6px;}
+.tension-text{font-size:13px;color:var(--cream);line-height:1.6;opacity:0.9;}
+
+.method-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin-bottom:28px;}
+.method-card h3{font-family:'DM Serif Display',serif;font-size:18px;color:var(--green);margin-bottom:10px;}
+.method-card p{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:8px;}
+.method-card p:last-child{margin-bottom:0;}
+
+.tool-footer{text-align:center;padding:32px 0;font-size:12px;color:var(--text-muted);}
+.tool-footer a{color:var(--green);text-decoration:none;font-weight:600;}
+
+.btn-restart{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--white);color:var(--green);border:2px solid var(--green);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-restart:hover{background:var(--green);color:var(--cream-light);}
+
+@media(max-width:600px){
+.container{padding:24px 16px 60px;}
+.intro-hero h2,.results-header h2{font-size:26px;}
+.q-prompt{font-size:18px;}
+.detail-grid{grid-template-columns:1fr;}
+.quadrant-grid{grid-template-columns:1fr;}
+.value-row{flex-wrap:wrap;}
+.value-bar-wrap{width:100%;margin-top:6px;}
+.header h1{font-size:16px;}
+.q-card{padding:24px 20px;}
+}
+
+
+/* Results page additions from mockup */
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--cream);}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:var(--shadow);}
+.quad-header{margin-bottom:24px;}
+.quad-header h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--green);margin-bottom:4px;}
+.quad-header p{font-size:13px;color:var(--text-muted);}
+.quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.quad-item{padding:20px;border-radius:12px;border:1px solid var(--border);position:relative;transition:transform 0.2s;}
+.quad-item:hover{transform:translateY(-2px);}
+.quad-item.top{background:var(--gold-muted);border-color:var(--gold);}
+.quad-item .q-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px;}
+.quad-item.top .q-label{color:#8B7200;}
+.quad-item .q-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--green);margin-bottom:2px;}
+.quad-item .q-score{font-family:'DM Serif Display',serif;font-size:32px;color:var(--gold);line-height:1;}
+.quad-item .q-bar{height:4px;background:var(--cream);border-radius:2px;margin-top:10px;overflow:hidden;}
+.quad-item .q-bar-fill{height:100%;border-radius:2px;background:var(--green-light);transition:width 1s ease;}
+.quad-item.top .q-bar-fill{background:var(--gold);}
+.quad-badge{position:absolute;top:12px;right:12px;background:var(--gold);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;}
+.radar-wrap{text-align:center;margin:8px 0 20px;}
+canvas#radar{max-width:520px;margin:0 auto;display:block;}
+.value-group{margin-bottom:20px;}
+.value-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--green-light);margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--cream);}
+.vr{display:grid;grid-template-columns:28px 1fr 100px;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(224,219,210,0.5);}
+.vr:last-child{border-bottom:none;}
+.vr-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+.vr-rank.t1{background:var(--green);color:var(--cream-light);}
+.vr-rank.t2{background:var(--green-light);color:var(--white);}
+.vr-rank.t3{background:var(--cream);color:var(--text-muted);}
+.vr-name{font-weight:600;font-size:13.5px;color:var(--text);margin-bottom:1px;}
+.vr-def{font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;}
+.vr-bar{height:7px;background:var(--cream);border-radius:4px;overflow:hidden;}
+.vr-bar-fill{height:100%;border-radius:4px;}
+.vr-bar-fill.t1{background:linear-gradient(90deg,var(--green),var(--green-light));}
+.vr-bar-fill.t2{background:var(--green-light);}
+.vr-bar-fill.t3{background:var(--cream);}
+.insight-card{background:var(--green);border-radius:var(--radius);padding:36px 32px;margin-bottom:24px;color:var(--cream-light);}
+.insight-card h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream-light);margin-bottom:8px;}
+.insight-card>p{font-size:13px;color:var(--cream);opacity:0.7;margin-bottom:20px;}
+.insight-block{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px 24px;margin-bottom:14px;}
+.insight-block:last-child{margin-bottom:0;}
+.insight-label{font-size:12px;font-weight:700;color:#D4A017;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+.insight-text{font-size:14px;color:var(--cream-light);line-height:1.7;opacity:0.95;}
+.tension-item{padding:20px 24px;background:var(--cream-bg);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;}
+.tension-vs{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.tension-val{font-weight:700;font-size:13px;color:var(--green);padding:5px 12px;background:var(--white);border-radius:20px;border:1px solid var(--border);}
+.tension-arrow{color:var(--gold);font-size:16px;}
+.tension-text{font-size:13.5px;color:var(--text);line-height:1.7;}
+.reflect-q{padding:16px 20px;background:var(--cream-bg);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;margin-bottom:12px;}
+.reflect-q strong{font-size:12px;color:#8B7200;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px;}
+.reflect-q p{font-size:14px;color:var(--text);line-height:1.6;}
+.method-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px;}
+.method-card h3{font-family:'DM Serif Display',serif;font-size:16px;color:var(--green);margin-bottom:8px;}
+.method-card p{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:6px;}
+.method-card p:last-child{margin-bottom:0;}
+.actions-bar{display:flex;gap:12px;justify-content:center;margin:32px 0 16px;}
+.disclaimer{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:22px 28px;margin:0 0 28px;font-size:13px;color:var(--text-muted);line-height:1.7;}
+.disclaimer p strong{color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px;}
+.btn-action{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-action.primary{background:var(--green);color:var(--cream-light);border:none;}
+.btn-action.primary:hover{background:var(--green-mid);transform:translateY(-1px);}
+.btn-action.secondary{background:var(--white);color:var(--green);border:2px solid var(--green);}
+.btn-action.secondary:hover{background:var(--green);color:var(--cream-light);}
+.fade-up{opacity:0;transform:translateY(16px);animation:fadeUp 0.5s ease forwards;}
+.d1{animation-delay:0.1s;}.d2{animation-delay:0.2s;}.d3{animation-delay:0.3s;}
+.d4{animation-delay:0.4s;}.d5{animation-delay:0.5s;}.d6{animation-delay:0.6s;}
+@media(max-width:600px){
+.quad-grid{grid-template-columns:1fr;}
+.vr{grid-template-columns:28px 1fr 80px;}
+.card{padding:24px 20px;}
+.insight-card{padding:28px 20px;}
+.actions-bar{flex-direction:column;align-items:stretch;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="header-left">
+<img src="https://scalingminds.github.io/leader-timeaudit/scaling-minds-logo.png" alt="Scaling Minds" class="header-logo" onerror="this.style.display='none'">
+<h1>Personal Values Discovery</h1>
+</div>
+<div class="header-right">&copy; Scaling Minds</div>
+</div>
+
+<div class="container">
+<div class="screen active" id="introScreen">
+<div class="intro-hero">
+<div class="intro-logo-wrap" style="text-align:center;margin-bottom:28px;">
+<img src="https://scalingminds.github.io/leader-timeaudit/scaling-minds-logo.png" alt="Scaling Minds" style="height:72px;border-radius:4px;" onerror="this.style.display='none'">
+</div>
+<h2>What Actually Drives You?</h2>
+<p>Most people can name their values. Fewer people understand how those values shape their decisions, especially when two good things are in tension with each other. This tool helps you see that clearly.</p>
+</div>
+<div class="intro-details">
+<h3>How It Works</h3>
+<p>You will read 27 short scenarios. Each one puts two values in tension. There are no wrong answers. You are simply choosing which pull is stronger for you in that moment.</p>
+<p>Your results map 18 core human values organized into 9 natural opposing pairs. The insight comes from seeing your values relative to each other, not from any single score being high or low.</p>
+<div class="detail-grid">
+<div class="detail-item"><div class="detail-num">27</div><div class="detail-label">Scenarios</div></div>
+<div class="detail-item"><div class="detail-num">8</div><div class="detail-label">Minutes</div></div>
+<div class="detail-item"><div class="detail-num">18</div><div class="detail-label">Values Mapped</div></div>
+</div>
+</div>
+<div class="disclaimer">
+<p><strong>A note before you begin.</strong> This is a self-reflection tool designed to spark insight and conversation. It is not a psychological assessment, a diagnostic instrument, or a substitute for professional counseling. There are no right or wrong profiles. Your responses are not stored, saved, or shared with anyone. Results are generated in your browser and disappear when you close the page. Use what resonates, set aside what does not, and bring anything interesting to your next coaching conversation.</p>
+</div>
+<div class="btn-center"><button class="btn-primary" onclick="startAssessment()">Begin Discovery &#8594;</button></div>
+</div>
+
+<div class="screen" id="questionScreen">
+<div class="progress-wrap">
+<div class="progress-top">
+<span class="progress-label">Values Discovery</span>
+<span class="progress-count" id="progressCount">1 of 27</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:3.7%"></div></div>
+</div>
+<div id="questionArea"></div>
+</div>
+
+<div class="screen" id="resultsScreen"></div>
+</div>
+
+<script>
+// 18 Values, 27 Scenarios — Scaling Minds Values Discovery v3
+// Psychometrically balanced: all values 25-75% A/B position
+
+var VALS = {
+FR:{name:'Freedom',def:'Making your own choices, thinking independently, resisting being told what to do or how to think.',pair:'LO'},
+LO:{name:'Loyalty',def:'Standing by your people and institutions, even when it costs you something.',pair:'FR'},
+ST:{name:'Stability',def:'Protecting what works, creating safety and predictability for yourself and others.',pair:'AD'},
+AD:{name:'Adventure',def:'Seeking novelty, challenge, and a life with wide horizons and new experiences.',pair:'ST'},
+AM:{name:'Ambition',def:'Achieving at a high level, setting standards, being recognized for excellent work.',pair:'EA'},
+EA:{name:'Ease',def:'Prioritizing your health, rest, enjoyment, and satisfaction with life as it is.',pair:'AM'},
+IN:{name:'Influence',def:'Shaping outcomes, having a seat at the table, being someone whose voice changes things.',pair:'SE'},
+SE:{name:'Service',def:'Easing suffering, lifting others up, putting needs of people or causes ahead of your own advancement.',pair:'IN'},
+BE:{name:'Belonging',def:'Being embedded in community, friendship, and genuine connection with a group.',pair:'AU'},
+AU:{name:'Autonomy',def:'Working and living on your own terms, even if it means being outside the group.',pair:'BE'},
+FA:{name:'Family',def:'Making the people closest to you the organizing principle of how you spend your time.',pair:'VO'},
+VO:{name:'Vocation',def:'Loving work for its own sake, finding identity and meaning through what you do professionally.',pair:'FA'},
+GR:{name:'Growth',def:'Constantly learning, evolving, pushing yourself to become different than you were.',pair:'RO'},
+RO:{name:'Roots',def:'Feeling connected to a specific place, to traditions, to the continuity of where you come from.',pair:'GR'},
+LE:{name:'Legacy',def:'Making a lasting impact on the world, leaving something behind that outlives you.',pair:'BU'},
+BU:{name:'Beauty',def:'Caring deeply about how things look, feel, and present themselves in your life.',pair:'LE'},
+FJ:{name:'Fairness',def:'Standing for justice and equity, even when it is inconvenient or unpopular.',pair:'CR'},
+CR:{name:'Creativity',def:'Building new things, imagining what does not yet exist, expressing original ideas.',pair:'FJ'}
+};
+
+var SCENARIOS = [
+// === FREEDOM vs LOYALTY (3) ===
+{
+  prompt:'You discover that an organization you have been part of for years is heading in a direction you fundamentally disagree with. Leaving would mean walking away from people who count on you.',
+  a:{label:'Leave and follow your own conviction',text:'Staying somewhere that no longer fits what you believe takes a toll that adds up quietly. The people who matter will understand, and you will be more useful to everyone when you are somewhere aligned with your actual convictions.',values:{FR:2,AU:1}},
+  b:{label:'Stay and work it out from inside',text:'Walking away is easy. Staying through disagreement and fighting for something better from the inside is what real commitment looks like. You do not abandon people just because things get hard.',values:{LO:2,FA:1}}
+},
+{
+  prompt:'A close friend asks you to publicly back their new venture. You have reservations about the idea, but they have always shown up for you when it counted.',
+  a:{label:'Back them because they have earned it',text:'Relationships are built on showing up for each other. Your friend has earned your support, and sometimes loyalty means putting your reservations aside because the relationship matters more than being right.',values:{LO:2,RO:1}},
+  b:{label:'Be honest about your reservations',text:'Real friendship does not mean automatic agreement. If you cannot be honest about what you think, the relationship is based on performance, not truth. You owe them your real perspective.',values:{FR:2,GR:1}}
+},
+{
+  prompt:'You are offered a role that would give you complete creative control, but accepting it would mean leaving a team that has been loyal to you through difficult times.',
+  a:{label:'Stay with the team',text:'The people who stood by you when things were hard deserve the same from you now. Chasing personal opportunity at the expense of the people who invested in you is a debt you should not leave unpaid.',values:{LO:2,BE:1}},
+  b:{label:'Take the role',text:'You cannot build a life around obligation. The team will find their way, and the version of you that emerges from real creative freedom will be more valuable to everyone, including them.',values:{FR:2,CR:1}}
+},
+
+// === STABILITY vs ADVENTURE (3) ===
+{
+  prompt:'Your industry is going through a major shift. You could ride it out in your current role where things are familiar and manageable, or jump into an emerging field that excites you but is completely unproven.',
+  a:{label:'Stay where things are solid',text:'There is real intelligence in recognizing when you have a good thing. Not every shiny opportunity deserves your attention, and the people around you benefit from your steadiness.',values:{ST:2,RO:1}},
+  b:{label:'Jump into the new field',text:'Playing it safe in a changing world is its own risk. The people who move early into new territory are the ones who define it. Staying comfortable is how you get left behind.',values:{AD:2,GR:1}}
+},
+{
+  prompt:'You have the chance to move to a place you have always been curious about. Your current life is comfortable and your routines are working well.',
+  a:{label:'Make the move',text:'Curiosity that goes unanswered becomes regret. A working routine will rebuild itself anywhere. The experiences waiting on the other side of that move are worth more than the comfort of what you already know.',values:{AD:2,CR:1}},
+  b:{label:'Protect what is working',text:'Uprooting a life that is functioning well because of curiosity is a gamble that rarely pays the way people imagine. There is wisdom in appreciating what you have instead of chasing what you do not.',values:{ST:2,FA:1}}
+},
+{
+  prompt:'A friend invites you on an ambitious, open-ended trip with no fixed plan. You have responsibilities at home and a schedule that depends on your presence.',
+  a:{label:'Go on the trip',text:'The responsibilities will still be there when you get back, but this kind of invitation will not come again. The stories and growth that come from unplanned experience are worth the disruption.',values:{AD:2,FR:1}},
+  b:{label:'Stay and keep your commitments',text:'The people and obligations depending on you are not abstractions. Keeping your word and maintaining the structure others rely on is more important than chasing an experience.',values:{ST:2,LO:1}}
+},
+
+// === AMBITION vs EASE (3) ===
+{
+  prompt:'You have been training hard for a goal that matters to you. You are exhausted, your body is asking for rest, and people close to you say you are pushing too hard. Easing up now would mean the goal slips further away.',
+  a:{label:'Ease up and recover',text:'Grinding through exhaustion is not discipline, it is a transaction with diminishing returns. A rested, present version of you is more effective than an depleted one chasing a number.',values:{EA:2,BU:1}},
+  b:{label:'Stay the course',text:'Discomfort is the price of anything worth building. You can recover after. Right now, the distance between who you are and who you want to become is closed by effort, not rest.',values:{AM:2,VO:1}}
+},
+{
+  prompt:'You have hit a level of success that is comfortable and sustainable. A mentor pushes you to aim higher, saying you are capable of much more than you are currently doing.',
+  a:{label:'Appreciate where you are',text:'The relentless drive to do more is a treadmill disguised as progress. If your life is working, the bravest thing you can do is stop reaching and start savoring.',values:{EA:2,SE:1}},
+  b:{label:'Listen to the mentor and push higher',text:'Contentment and complacency look the same from a distance. If someone you respect sees more in you than you are currently giving, that is information worth acting on.',values:{AM:2,IN:1}}
+},
+{
+  prompt:'You have a window of time you could use to pursue a meaningful professional goal or spend it doing something purely restorative and enjoyable.',
+  a:{label:'Pursue the goal',text:'Windows close. The enjoyable thing will always be available, but the right moment to make a professional move is time-sensitive. Discipline now creates freedom later.',values:{AM:2,GR:1}},
+  b:{label:'Choose rest and enjoyment',text:'The assumption that professional goals deserve your best energy more than your own wellbeing is a lie productivity culture tells you. You are not a machine. Rest is not a reward, it is fuel.',values:{EA:2,BE:1}}
+},
+
+// === INFLUENCE vs SERVICE (3) ===
+{
+  prompt:'You can either take a high-profile leadership role where your decisions will shape policy, or a hands-on role where you work directly with the people affected by those policies.',
+  a:{label:'Take the leadership role',text:'Working directly with people is noble, but it does not change the system. If you want to make a difference at scale, you need to be in the room where the decisions are made.',values:{IN:2,FR:1}},
+  b:{label:'Work directly with people',text:'Titles and policy rooms are abstractions. The person in front of you who needs help is real. Direct service is where the actual impact happens, not in conference rooms.',values:{SE:2,BE:1}}
+},
+{
+  prompt:'Your community needs someone to organize a response to a local crisis. You could lead the effort visibly, or do the unglamorous behind-the-scenes work that actually makes it happen.',
+  a:{label:'Do the behind-the-scenes work',text:'The work that matters most rarely comes with a spotlight. Someone has to do the thankless coordination that makes everything else possible, and that is where real service lives.',values:{SE:2,FA:1}},
+  b:{label:'Lead visibly',text:'Visibility is not vanity when a crisis needs a face and a voice. Someone has to step forward, organize people, and take accountability for outcomes. That is what leadership is for.',values:{IN:2,RO:1}}
+},
+{
+  prompt:'You are asked to mentor a promising young person in your community. Investing in them would mean pulling back from a board position where you have been building real influence over important decisions.',
+  a:{label:'Keep your seat at the table',text:'Your board position lets you shape outcomes that affect thousands of people. Mentoring one person is meaningful, but the leverage you have right now is rare and hard to replace.',values:{IN:2,AM:1}},
+  b:{label:'Invest in the mentee',text:'Boards rotate and institutions carry on without you. But the window to shape a young person at a formative moment is narrow and irreplaceable. That is where your energy will matter most.',values:{SE:2,RO:1}}
+},
+
+// === BELONGING vs AUTONOMY (3) ===
+{
+  prompt:'A group you have been part of for years wants you to take on a bigger role that would deepen your involvement. Accepting would mean giving up a significant amount of personal independence.',
+  a:{label:'Deepen your involvement',text:'Real belonging requires investment. Staying on the edges of community while keeping all your independence is a way of having it both ways that cheats everyone, including you.',values:{BE:2,SE:1}},
+  b:{label:'Protect your independence',text:'You can care about a group without being consumed by it. Maintaining your own space and autonomy is what lets you show up as a whole person rather than a stretched one.',values:{AU:2,FR:1}}
+},
+{
+  prompt:'You realize that fitting in with a group you value would require softening some of the opinions and habits that make you distinctly you.',
+  a:{label:'Chart your own path',text:'Belonging that requires you to become a softer version of yourself is not real belonging. The right people will value your edges, not ask you to sand them down.',values:{AU:2,CR:1}},
+  b:{label:'Adapt to strengthen the bond',text:'Every relationship requires some accommodation. The willingness to adjust is not weakness, it is what makes genuine connection possible. Pure self-expression without compromise is just isolation with a good story.',values:{BE:2,LO:1}}
+},
+{
+  prompt:'You have built a quiet, independent life that works well for you. An old friend group is rekindling and wants you deeply involved again. Joining would mean giving up much of the solitude you have come to value.',
+  a:{label:'Rejoin the group',text:'Solo success has a ceiling that is hard to see from inside it. The energy and meaning that come from genuine belonging create something that no amount of comfortable independence can match.',values:{BE:2,FA:1}},
+  b:{label:'Protect your solitude',text:'There is a reason your independent life is working. Group dynamics come with compromise and obligation that will dilute the very thing that has made you feel most like yourself.',values:{AU:2,EA:1}}
+},
+
+// === FAMILY vs VOCATION (3) ===
+{
+  prompt:'The work opportunity of your career arrives at the same moment a family member needs significant support. Both are time-sensitive and cannot be delayed.',
+  a:{label:'Show up for family',text:'Careers have multiple chapters. Your family member is going through something that only happens once, and you will not get this time back. Work will always create another opportunity. People will not.',values:{FA:2,BE:1}},
+  b:{label:'Take the opportunity',text:'You have built your professional life for a moment like this. Your family member has other people who can support them. Walking away from the thing you have worked toward will not help anyone long term.',values:{VO:2,AM:1}}
+},
+{
+  prompt:'Your work is deeply fulfilling and demanding. Your family is not complaining, but you can feel the distance growing. Nothing is broken, but nothing is quite right either.',
+  a:{label:'Trust that both can coexist',text:'Fulfilling work makes you a better person to come home to. The distance is temporary and your family benefits from you being alive in what you do. Pulling back from meaningful work creates a different kind of resentment.',values:{VO:2,GR:1}},
+  b:{label:'Pull back from work to close the gap',text:'The absence of complaint is not the same as the presence of connection. The people closest to you will not always tell you what they need. Noticing the drift and correcting for it before it becomes a problem is the whole point.',values:{FA:2,LO:1}}
+},
+{
+  prompt:'You are considering a career change that would bring you more meaning but significantly less income, affecting your family&#39;s lifestyle and plans.',
+  a:{label:'Make the change for meaning',text:'Meaning is not a luxury. A parent or partner who is genuinely fulfilled teaches more by example than any comfortable lifestyle can provide. The financial adjustment is real but temporary.',values:{VO:2,CR:1}},
+  b:{label:'Stay for your family&#39;s stability',text:'Meaning is important but so is providing for the people who depend on you. There are ways to find purpose without destabilizing the lives of people who did not choose that trade-off.',values:{FA:2,SE:1}}
+},
+
+// === GROWTH vs ROOTS (3) ===
+{
+  prompt:'You are invited to train under someone who could transform your understanding of your field. It would mean relocating away from the place and people that ground you.',
+  a:{label:'Relocate for the growth',text:'The people and places that ground you will still be there. But this kind of learning opportunity comes once. The version of you that returns will bring more back than the version that stayed.',values:{RO:2,ST:1}},
+  b:{label:'Stay rooted',text:'Chasing every growth opportunity at the expense of where you belong turns life into a series of departures. The deepest growth often happens in staying, not leaving.',values:{GR:2,AD:1}}
+},
+{
+  prompt:'Your hometown is changing and losing the character that made it special to you. You could invest your energy in preserving what remains, or redirect that energy toward your own development in a new place.',
+  a:{label:'Invest in where you come from',text:'Places do not preserve themselves. If the people who care about a community all leave to pursue personal growth elsewhere, there will be nothing left worth coming back to.',values:{RO:2,LO:1}},
+  b:{label:'Redirect toward your own growth',text:'Nostalgia is not a strategy. Holding onto a version of a place that no longer exists is a way of avoiding the future. Your energy is better spent evolving than preserving.',values:{GR:2,CR:1}}
+},
+{
+  prompt:'You could spend a sabbatical deepening your expertise in a new area, or use it to reconnect with your family history and the community you grew up in.',
+  a:{label:'Deepen your expertise',text:'A sabbatical spent growing your capabilities opens doors you cannot even see yet. Family history is always there. Your window to level up is not.',values:{GR:2,VO:1}},
+  b:{label:'Reconnect with your roots',text:'Knowing where you come from gives you a foundation that no amount of professional development can replace. The people and stories that shaped you deserve your attention before they are gone.',values:{RO:2,FA:1}}
+},
+
+// === LEGACY vs BEAUTY (3) ===
+{
+  prompt:'You could spend your resources building something that will outlast you and benefit many people, or invest them in making your everyday surroundings and experiences more beautiful and enjoyable.',
+  a:{label:'Invest in beauty and enjoyment',text:'The life you are living right now is the only one you can be certain of. Making it beautiful and pleasurable is not shallow. It is a refusal to sacrifice the present for a future you may never see.',values:{BU:2,EA:1}},
+  b:{label:'Build something that lasts',text:'Beauty fades. What you build for others endures. The satisfaction of leaving something behind that continues to work long after you are gone is worth more than any amount of personal comfort.',values:{LE:2,IN:1}}
+},
+{
+  prompt:'You are renovating your home. You could invest in structural improvements that will serve your family for decades, or spend the same money making the spaces you live in every day genuinely beautiful.',
+  a:{label:'Make it beautiful now',text:'You walk through your home every single day. The quality of that daily experience shapes your mood, your energy, and your relationships in ways that outlast any structural investment.',values:{BU:2,AD:1}},
+  b:{label:'Build for the long term',text:'Beautiful finishes fade. A well-built structure serves generations. Investing in what lasts is more responsible than optimizing for how things look this year.',values:{LE:2,FJ:1}}
+},
+{
+  prompt:'You are designing a project. You could optimize it for long-term durability and institutional impact, or for the quality of the experience it creates for people in the moment.',
+  a:{label:'Optimize for lasting impact',text:'Experiences are fleeting. Structures endure. If you want the project to matter ten years from now, design it to survive, not just to delight.',values:{LE:2,AM:1}},
+  b:{label:'Optimize for the experience',text:'A project that people love in the moment creates something that spreadsheets cannot capture. The impact of genuine delight ripples outward in ways that outlast any institutional structure.',values:{BU:2,CR:1}}
+},
+
+// === FAIRNESS vs CREATIVITY (3) ===
+{
+  prompt:'You notice that a creative project your team is excited about would inadvertently disadvantage a group of stakeholders. Fixing it would mean significantly constraining the creative vision.',
+  a:{label:'Fix the unfairness first',text:'A creative vision that works for some people at the expense of others is incomplete, not innovative. If the project cannot work without that cost, the project needs to evolve before it ships.',values:{FJ:2,SE:1}},
+  b:{label:'Protect the creative vision',text:'Every creative breakthrough disrupts something. If you constrain every new idea by who it might inconvenience, nothing meaningful ever gets built. Progress always has friction.',values:{CR:2,AU:1}}
+},
+{
+  prompt:'You have bandwidth to either build a new product you have been imagining for months, or use that time to fix a systemic process that is treating some people unfairly.',
+  a:{label:'Build the new thing',text:'The world moves forward on new ideas, not on endlessly fixing old ones. If you spend all your energy repairing broken systems, you never create the thing that could replace them entirely.',values:{CR:2,GR:1}},
+  b:{label:'Fix the broken process',text:'Building something new while a broken system continues to hurt people is a luxury. The people being affected by the unfairness do not care about your product roadmap. They need the process fixed now.',values:{FJ:2,LE:1}}
+},
+{
+  prompt:'You are in a position to either advocate loudly for a policy change that would make things more equitable, or quietly invest that energy in an innovative project that could change how people work.',
+  a:{label:'Advocate for the policy change',text:'Innovation without justice just builds a shinier version of the same broken system. If you have the standing to push for fairness, using it is more important than building something clever.',values:{FJ:2,IN:1}},
+  b:{label:'Build the innovative project',text:'Policy changes are slow and often get watered down. Building something genuinely new that changes the landscape is a more effective use of your energy than fighting political battles.',values:{CR:2,AD:1}}
+}
+];
+
+
+var MAX_POSSIBLE = {FR:9,LO:10,ST:7,AD:9,AM:9,EA:8,IN:9,SE:10,BE:10,AU:8,FA:11,VO:8,GR:11,RO:10,LE:7,BU:7,FJ:7,CR:12};
+
+var PAIRS = [['FR','LO'],['ST','AD'],['AM','EA'],['IN','SE'],['BE','AU'],['FA','VO'],['GR','RO'],['LE','BU'],['FJ','CR']];
+
+var PAIR_LABELS = {
+  'FR-LO':'Independence vs Commitment',
+  'ST-AD':'Safety vs Exploration',
+  'AM-EA':'Drive vs Contentment',
+  'IN-SE':'Power vs Giving',
+  'BE-AU':'Community vs Independence',
+  'FA-VO':'Home vs Work',
+  'GR-RO':'Evolution vs Continuity',
+  'LE-BU':'Endurance vs Presence',
+  'FJ-CR':'Justice vs Invention'
+};
+
+var currentQ = 0;
+var scores = {};
+
+function initScores() {
+  scores = {};
+  Object.keys(VALS).forEach(function(k) { scores[k] = 0; });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startAssessment() {
+  initScores();
+  currentQ = 0;
+  showScreen('questionScreen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var q = SCENARIOS[currentQ];
+  var num = currentQ + 1;
+  document.getElementById('progressCount').textContent = num + ' of ' + SCENARIOS.length;
+  document.getElementById('progressFill').style.width = ((num / SCENARIOS.length) * 100) + '%';
+  var area = document.getElementById('questionArea');
+  area.style.opacity = '0';
+  area.style.transform = 'translateY(8px)';
+  setTimeout(function() {
+    area.innerHTML = '<div class="q-card">' +
+      '<div class="q-context">Scenario ' + num + ' of ' + SCENARIOS.length + '</div>' +
+      '<div class="q-prompt">' + q.prompt + '</div>' +
+      '<button class="choice-btn" onclick="choose(this,\'a\')">' +
+        '<span class="choice-label">' + q.a.label + '</span>' + q.a.text +
+      '</button>' +
+      '<button class="choice-btn" onclick="choose(this,\'b\')">' +
+        '<span class="choice-label">' + q.b.label + '</span>' + q.b.text +
+      '</button></div>';
+    area.style.transition = 'opacity 0.3s, transform 0.3s';
+    area.style.opacity = '1';
+    area.style.transform = 'translateY(0)';
+  }, 150);
+}
+
+function choose(btn, choice) {
+  var q = SCENARIOS[currentQ];
+  var chosen = choice === 'a' ? q.a : q.b;
+  Object.keys(chosen.values).forEach(function(k) { scores[k] += chosen.values[k]; });
+  btn.classList.add('selected');
+  setTimeout(function() {
+    currentQ++;
+    if (currentQ >= SCENARIOS.length) showResults();
+    else renderQuestion();
+  }, 200);
+}
+
+function showResults() {
+  var keys = Object.keys(VALS);
+  // Normalize each value against its max possible
+  var norm = {};
+  keys.forEach(function(k) { norm[k] = (scores[k] / MAX_POSSIBLE[k]) * 100; });
+
+  // Rank
+  var ranked = keys.slice().sort(function(a, b) { return norm[b] - norm[a]; });
+
+  // Display normalization (relative)
+  var normVals = keys.map(function(k) { return norm[k]; });
+  var maxN = Math.max.apply(null, normVals);
+  var minN = Math.min.apply(null, normVals);
+  var rangeN = maxN - minN || 1;
+  var display = {};
+  keys.forEach(function(k) { display[k] = ((norm[k] - minN) / rangeN) * 100; });
+
+  // Quadrant scores
+  var quads = {
+    'Openness to Change': {keys:['FR','AD','CR','AU','GR'], score:0},
+    'Grounding': {keys:['ST','RO','LO','FA','BE'], score:0},
+    'Drive': {keys:['AM','IN','LE','VO'], score:0},
+    'Care': {keys:['EA','SE','FJ','BU'], score:0}
+  };
+  Object.keys(quads).forEach(function(qn) {
+    var q = quads[qn];
+    var sum = 0;
+    q.keys.forEach(function(k) { sum += norm[k]; });
+    q.score = sum / q.keys.length;
+  });
+  var maxQuadScore = Math.max.apply(null, Object.keys(quads).map(function(q) { return quads[q].score; }));
+
+  var h = '';
+
+  // Header
+  h += '<div class="results-header fade-up"><div style="text-align:center;margin-bottom:16px;"><img src="https://scalingminds.github.io/leader-timeaudit/scaling-minds-logo.png" alt="Scaling Minds" style="height:56px;border-radius:4px;" onerror="this.style.display=\'none\'"></div><h2>Your Values Profile</h2>';
+  h += '<p>Here is how your 18 values relate to each other. Every value here is legitimate. The interesting part is the shape of the whole picture.</p></div>';
+
+  // Quadrants
+  h += '<div class="section-label fade-up d1">The Big Picture</div>';
+  h += '<div class="card fade-up d1"><div class="quad-header"><h3>Four Dimensions</h3>';
+  h += '<p>Your values cluster into four higher-order motivations. This is the wide-angle view.</p></div>';
+  h += '<div class="quad-grid">';
+  Object.keys(quads).forEach(function(qn) {
+    var q = quads[qn];
+    var isTop = Math.abs(q.score - maxQuadScore) < 0.5;
+    h += '<div class="quad-item' + (isTop ? ' top' : '') + '">';
+    if (isTop) h += '<div class="quad-badge">STRONGEST</div>';
+    h += '<div class="q-label">Dimension</div>';
+    h += '<div class="q-name">' + qn + '</div>';
+    h += '<div class="q-score">' + Math.round(q.score) + '</div>';
+    h += '<div class="q-bar"><div class="q-bar-fill" style="width:' + q.score + '%"></div></div>';
+    h += '</div>';
+  });
+  h += '</div></div>';
+
+  // Radar chart
+  h += '<div class="section-label fade-up d2">Your Values Map</div>';
+  h += '<div class="card fade-up d2"><div class="quad-header"><h3>18 Values at a Glance</h3>';
+  h += '<p>The shape matters more than any single score. Notice where the profile reaches out and where it pulls in.</p></div>';
+  h += '<div class="radar-wrap"><canvas id="radar" width="520" height="520"></canvas></div></div>';
+
+  // Ranked values
+  h += '<div class="section-label fade-up d3">Your Values Ranked</div>';
+  h += '<div class="card fade-up d3"><div class="quad-header"><h3>All 18 Values</h3>';
+  h += '<p>Your top values are what you lean toward instinctively. Lower values are not weaknesses. They are where you invest less motivational energy.</p></div>';
+
+  var tiers = [
+    {label:'Core drivers', start:0, end:6},
+    {label:'Middle ground', start:6, end:12},
+    {label:'Lower priority', start:12, end:18}
+  ];
+  tiers.forEach(function(tier) {
+    h += '<div class="value-group"><div class="value-group-label">' + tier.label + '</div>';
+    for (var i = tier.start; i < tier.end && i < ranked.length; i++) {
+      var k = ranked[i];
+      var pct = display[k];
+      var t = i < 6 ? 't1' : i < 12 ? 't2' : 't3';
+      h += '<div class="vr"><div class="vr-rank ' + t + '">' + (i + 1) + '</div>';
+      h += '<div class="vr-info"><div class="vr-name">' + VALS[k].name + '</div>';
+      h += '<div class="vr-def">' + VALS[k].def + '</div></div>';
+      h += '<div class="vr-bar"><div class="vr-bar-fill ' + t + '" style="width:' + Math.max(pct, 8) + '%"></div></div></div>';
+    }
+    h += '</div>';
+  });
+  h += '</div>';
+
+  // Tensions (from the 9 pairs, find the widest gaps)
+  h += '<div class="section-label fade-up d4">Productive Tensions</div>';
+  h += '<div class="card fade-up d4"><div class="quad-header"><h3>Where Your Values Pull in Opposite Directions</h3>';
+  h += '<p>Each pair below represents two values that compete for the same energy. The wider the gap, the stronger your lean.</p></div>';
+
+  var pairGaps = PAIRS.map(function(p) {
+    return { a: p[0], b: p[1], gap: Math.abs(norm[p[0]] - norm[p[1]]), winner: norm[p[0]] > norm[p[1]] ? p[0] : p[1], loser: norm[p[0]] > norm[p[1]] ? p[1] : p[0] };
+  }).sort(function(x, y) { return y.gap - x.gap; });
+
+  pairGaps.slice(0, 4).forEach(function(pg) {
+    h += '<div class="tension-item"><div class="tension-vs">';
+    h += '<span class="tension-val">' + VALS[pg.winner].name + ' (#' + (ranked.indexOf(pg.winner) + 1) + ')</span>';
+    h += '<span class="tension-arrow">&#8596;</span>';
+    h += '<span class="tension-val">' + VALS[pg.loser].name + ' (#' + (ranked.indexOf(pg.loser) + 1) + ')</span>';
+    h += '</div>';
+    h += '<div class="tension-text">You lean strongly toward ' + VALS[pg.winner].name.toLowerCase() + ' over ' + VALS[pg.loser].name.toLowerCase() + '. ';
+    h += 'This means ' + VALS[pg.winner].def.charAt(0).toLowerCase() + VALS[pg.winner].def.slice(1, -1) + ' comes naturally to you, while ' + VALS[pg.loser].def.charAt(0).toLowerCase() + VALS[pg.loser].def.slice(1, -1) + ' gets less of your energy. ';
+    h += 'The question worth asking: when has this trade-off cost you something you did not notice at the time?</div></div>';
+  });
+  h += '</div>';
+
+  // Reflections
+  var reflections = {
+    FR:'When was the last time you genuinely changed your mind because of someone else&#39;s reasoning rather than your own? What made that possible?',
+    LO:'Is there someone or something you are staying loyal to out of habit rather than conviction? What would it mean to examine that honestly?',
+    ST:'What would you do differently if you were not afraid of things falling apart? What does that tell you?',
+    AD:'What is the difference between the novelty that actually grows you and the novelty that just distracts you from sitting with something hard?',
+    AM:'If nobody could see your accomplishments, which ones would you still pursue? That is probably where your real ambition lives.',
+    EA:'Where in your life are you treating rest as laziness instead of recognizing it as something you actually need?',
+    IN:'Where is your influence currently pointed? Is it aimed at what you are genuinely proud of, or at what is expected of you?',
+    SE:'Who are you serving right now, and is it because you chose to or because you feel obligated? There is a difference.',
+    BE:'What group makes you feel most like yourself? What is it about that specific belonging that works for you?',
+    AU:'What is the difference between the independence that serves you and the independence that isolates you?',
+    FA:'If your family could see how you actually spend your time, would they feel prioritized? What would need to change?',
+    VO:'If your work disappeared tomorrow, what would be left of your identity? Is that enough?',
+    GR:'What is the next version of yourself that you are growing toward? Can you describe that person specifically?',
+    RO:'What from your past are you carrying forward intentionally versus what are you carrying forward out of inertia?',
+    LE:'What would you want people to say about what you built, long after you are gone? Are you building that thing right now?',
+    BU:'Where in your daily life have you settled for ugly or careless when something more beautiful was possible?',
+    FJ:'Where have you stayed quiet about something unfair because speaking up felt too costly? What did that silence cost instead?',
+    CR:'What is the idea you keep coming back to but have not built yet? What is actually stopping you?'
+  };
+
+  h += '<div class="section-label fade-up d5">Questions Worth Sitting With</div>';
+  h += '<div class="card fade-up d5"><div class="quad-header"><h3>Coaching Reflections</h3>';
+  h += '<p>Generated from your specific profile. No right answers. The goal is noticing.</p></div>';
+
+  ranked.slice(0, 3).forEach(function(k) {
+    h += '<div class="reflect-q"><strong>' + VALS[k].name + ' &#8212; Top Value</strong>';
+    h += '<p>' + reflections[k] + '</p></div>';
+  });
+  ranked.slice(-3).reverse().forEach(function(k) {
+    h += '<div class="reflect-q"><strong>' + VALS[k].name + ' &#8212; Lower Value</strong>';
+    h += '<p>' + reflections[k] + '</p></div>';
+  });
+
+  // Find notable within-pair splits
+  var biggestSplit = pairGaps[0];
+  if (biggestSplit) {
+    h += '<div class="reflect-q"><strong>Your Widest Tension: ' + VALS[biggestSplit.winner].name + ' vs ' + VALS[biggestSplit.loser].name + '</strong>';
+    h += '<p>This is where your values pull hardest in opposite directions. What is one recent decision where this tension was quietly shaping the outcome?</p></div>';
+  }
+  h += '</div>';
+
+  // Method + Disclaimer
+  h += '<div class="method-card fade-up d6"><h3>About This Assessment</h3>';
+  h += '<p>This tool measures 18 core human values organized into 9 opposing pairs, using 27 forced-choice scenarios. Each scenario puts two values in direct tension, revealing relative priorities rather than absolute ratings.</p>';
+  h += '<p>All values appear with balanced frequency and position to minimize measurement bias. Scores are normalized against each value&#39;s maximum possible score to ensure fair comparison across all 18 values.</p>';
+  h += '<p>The framework draws on Shalom Schwartz&#39;s cross-cultural values research and the Welch-Bristol Values Inventory, adapted for self-reflection in a coaching context.</p>';
+  h += '<p style="margin-top:12px;padding-top:12px;border-top:1px solid #e0dbd2;"><strong style="color:#1B4332;">Disclaimer:</strong> This is a self-reflection tool, not a psychological assessment, diagnostic instrument, or substitute for professional counseling. There are no right or wrong profiles. Your responses are not stored, saved, or shared with anyone. Results are generated entirely in your browser. &copy; Scaling Minds. All rights reserved.</p></div>';
+
+  // Actions
+  h += '<div class="actions-bar fade-up d6">';
+  h += '<button class="btn-action primary" onclick="exportPDF()">&#128438; Export PDF</button>';
+  h += '<button class="btn-action secondary" onclick="startAssessment()">&#8635; Retake Assessment</button></div>';
+
+  h += '<div class="tool-footer">Based on cross-cultural values research by Schwartz (1992, 2012) and the Welch-Bristol Values Inventory.<br>';
+  h += '&copy; Scaling Minds &middot; <a href="https://scalingminds.com" target="_blank">scalingminds.com</a></div>';
+
+  document.getElementById('resultsScreen').innerHTML = h;
+  showScreen('resultsScreen');
+  setTimeout(function() { drawRadar(display); }, 200);
+}
+
+function drawRadar(norm) {
+  var canvas = document.getElementById('radar');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var dpr = window.devicePixelRatio || 1;
+  var W = 520, H = 520;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+  var cx = W / 2, cy = H / 2, R = Math.min(cx, cy) - 68;
+
+  // Circular order matching pair structure
+  var order = ['FR','AU','CR','AD','GR','VO','AM','IN','LE','FJ','SE','FA','BE','LO','RO','ST','EA','BU'];
+  var n = order.length;
+  var step = (Math.PI * 2) / n;
+  var start = -Math.PI / 2;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  [0.25, 0.5, 0.75, 1].forEach(function(pct) {
+    ctx.beginPath();
+    for (var i = 0; i <= n; i++) {
+      var a = start + i * step;
+      var x = cx + Math.cos(a) * R * pct;
+      var y = cy + Math.sin(a) * R * pct;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(27,67,50,0.07)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Axes
+  for (var i = 0; i < n; i++) {
+    var a = start + i * step;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+    ctx.strokeStyle = 'rgba(27,67,50,0.05)';
+    ctx.stroke();
+  }
+
+  // Data polygon
+  ctx.beginPath();
+  for (var i = 0; i < n; i++) {
+    var a = start + i * step;
+    var v = (norm[order[i]] / 100) * 0.85 + 0.15;
+    var x = cx + Math.cos(a) * R * v;
+    var y = cy + Math.sin(a) * R * v;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(27,67,50,0.1)';
+  ctx.fill();
+  ctx.strokeStyle = '#1B4332';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Points + labels
+  for (var i = 0; i < n; i++) {
+    var a = start + i * step;
+    var v = (norm[order[i]] / 100) * 0.85 + 0.15;
+    var x = cx + Math.cos(a) * R * v;
+    var y = cy + Math.sin(a) * R * v;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = norm[order[i]] > 66 ? '#B8860B' : norm[order[i]] > 33 ? '#40916C' : '#D4C5A9';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    var lx = cx + Math.cos(a) * (R + 42);
+    var ly = cy + Math.sin(a) * (R + 42);
+    ctx.font = '500 10px DM Sans, sans-serif';
+    ctx.fillStyle = norm[order[i]] > 50 ? '#1B4332' : '#999';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(VALS[order[i]].name, lx, ly);
+  }
+}
+function exportPDF() {
+  var keys = Object.keys(VALS);
+  var norm = {};
+  keys.forEach(function(k) { norm[k] = (scores[k] / MAX_POSSIBLE[k]) * 100; });
+  var ranked = keys.slice().sort(function(a, b) { return norm[b] - norm[a]; });
+
+  // Quadrant scores
+  var quads = {
+    'Openness to Change': {keys:['FR','AD','CR','AU','GR'], score:0},
+    'Grounding': {keys:['ST','RO','LO','FA','BE'], score:0},
+    'Drive': {keys:['AM','IN','LE','VO'], score:0},
+    'Care': {keys:['EA','SE','FJ','BU'], score:0}
+  };
+  Object.keys(quads).forEach(function(qn) {
+    var q = quads[qn];
+    var sum = 0;
+    q.keys.forEach(function(k) { sum += norm[k]; });
+    q.score = Math.round(sum / q.keys.length);
+  });
+
+  // Pair gaps
+  var pairGaps = PAIRS.map(function(p) {
+    return { a: p[0], b: p[1], gap: Math.abs(norm[p[0]] - norm[p[1]]), winner: norm[p[0]] > norm[p[1]] ? p[0] : p[1], loser: norm[p[0]] > norm[p[1]] ? p[1] : p[0] };
+  }).sort(function(x, y) { return y.gap - x.gap; });
+
+  var reflections = {
+    FR:'When was the last time you genuinely changed your mind because of someone else&#39;s reasoning?',
+    LO:'Is there someone you are staying loyal to out of habit rather than conviction?',
+    ST:'What would you do differently if you were not afraid of things falling apart?',
+    AD:'What is the difference between novelty that grows you and novelty that distracts you?',
+    AM:'If nobody could see your accomplishments, which ones would you still pursue?',
+    EA:'Where are you treating rest as laziness instead of something you need?',
+    IN:'Where is your influence currently pointed? Is it aimed at what you are proud of?',
+    SE:'Who are you serving right now, and is it because you chose to or feel obligated?',
+    BE:'What group makes you feel most like yourself? What is it about that belonging that works?',
+    AU:'What is the difference between independence that serves you and independence that isolates you?',
+    FA:'If your family could see how you spend your time, would they feel prioritized?',
+    VO:'If your work disappeared tomorrow, what would be left of your identity?',
+    GR:'What is the next version of yourself you are growing toward?',
+    RO:'What from your past are you carrying forward intentionally versus out of inertia?',
+    LE:'What would people say about what you built, long after you are gone?',
+    BU:'Where in your daily life have you settled for careless when something more beautiful was possible?',
+    FJ:'Where have you stayed quiet about something unfair because speaking up felt too costly?',
+    CR:'What is the idea you keep coming back to but have not built yet?'
+  };
+
+  var dateStr = new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+  var logoUrl = 'https://scalingminds.github.io/leader-timeaudit/scaling-minds-logo.png';
+
+  var w = window.open('', '_blank');
+  var p = '';
+  p += '<!DOCTYPE html><html><head><title>Values Profile - Scaling Minds</title>';
+  p += '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">';
+  p += '<style>';
+  p += '*{box-sizing:border-box;margin:0;padding:0;}';
+  p += 'body{font-family:DM Sans,sans-serif;padding:44px;font-size:13px;color:#1a1a1a;line-height:1.6;}';
+  p += '.hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:3px solid #B8860B;margin-bottom:28px;}';
+  p += '.hdr img{height:46px;}';
+  p += '.hdr-right{text-align:right;}';
+  p += '.hdr-title{font-family:DM Serif Display,serif;font-size:18px;color:#1B4332;}';
+  p += '.hdr-date{font-size:11px;color:#888;margin-top:2px;}';
+  p += 'h2{font-family:DM Serif Display,serif;font-size:14px;color:#1B4332;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #f0ead6;padding-bottom:7px;margin:28px 0 14px;}';
+  p += '.quads{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:8px;}';
+  p += '.quad{border:1.5px solid #e0dbd2;border-radius:8px;padding:14px;border-top:3px solid #B8860B;}';
+  p += '.quad-name{font-size:11px;font-weight:700;color:#1B4332;margin-bottom:4px;}';
+  p += '.quad-score{font-family:DM Serif Display,serif;font-size:24px;color:#B8860B;}';
+  p += '.val-row{display:grid;grid-template-columns:28px 1fr 90px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #f0ead6;}';
+  p += '.val-row:last-child{border-bottom:none;}';
+  p += '.val-rank{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;background:#1B4332;}';
+  p += '.val-rank.mid{background:#40916C;}.val-rank.low{background:#D4C5A9;color:#6b6b6b;}';
+  p += '.val-name{font-weight:600;font-size:12px;color:#1a1a1a;}';
+  p += '.val-def{font-size:10px;color:#888;line-height:1.4;}';
+  p += '.val-bar{height:6px;background:#f0ead6;border-radius:3px;overflow:hidden;}';
+  p += '.val-fill{height:100%;border-radius:3px;}';
+  p += '.val-fill.hi{background:#1B4332;}.val-fill.md{background:#40916C;}.val-fill.lo{background:#D4C5A9;}';
+  p += '.tension{background:#FAF8F4;border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:10px;}';
+  p += '.tension-pair{font-weight:700;font-size:12px;color:#1B4332;margin-bottom:4px;}';
+  p += '.tension-text{font-size:11px;color:#1a1a1a;line-height:1.6;}';
+  p += '.reflect{background:#FAF8F4;border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:10px;}';
+  p += '.reflect strong{font-size:10px;color:#8B7200;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}';
+  p += '.reflect p{font-size:11px;color:#1a1a1a;line-height:1.5;}';
+  p += '.foot{margin-top:36px;padding-top:14px;border-top:1px solid #e0dbd2;font-size:9px;color:#aaa;text-align:center;line-height:1.6;}';
+  p += '.tier-label{font-size:10px;font-weight:700;color:#40916C;text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px;padding-bottom:4px;border-bottom:1px dashed #D4C5A9;}';
+  p += '@media print{body{padding:24px;} .page-break{page-break-before:always;}}';
+  p += '</style></head><body>';
+
+  // Header
+  p += '<div class="hdr"><img src="' + logoUrl + '" alt="Scaling Minds" onerror="this.style.display=\'none\'">';
+  p += '<div class="hdr-right"><div class="hdr-title">Personal Values Profile</div>';
+  p += '<div class="hdr-date">' + dateStr + '</div></div></div>';
+
+  // Quadrants
+  p += '<h2>Four Dimensions</h2>';
+  p += '<div class="quads">';
+  Object.keys(quads).forEach(function(qn) {
+    p += '<div class="quad"><div class="quad-name">' + qn + '</div>';
+    p += '<div class="quad-score">' + quads[qn].score + '</div></div>';
+  });
+  p += '</div>';
+
+  // Ranked values
+  p += '<h2>Your 18 Values Ranked</h2>';
+  var tierLabels = ['Core Drivers', 'Middle Ground', 'Lower Priority'];
+  var tierBounds = [[0,6],[6,12],[12,18]];
+  var normVals = keys.map(function(k) { return norm[k]; });
+  var maxN = Math.max.apply(null, normVals);
+  var minN = Math.min.apply(null, normVals);
+  var rangeN = maxN - minN || 1;
+
+  tierBounds.forEach(function(bounds, ti) {
+    p += '<div class="tier-label">' + tierLabels[ti] + '</div>';
+    for (var i = bounds[0]; i < bounds[1] && i < ranked.length; i++) {
+      var k = ranked[i];
+      var pct = ((norm[k] - minN) / rangeN) * 100;
+      var rc = i < 6 ? '' : i < 12 ? ' mid' : ' low';
+      var fc = i < 6 ? 'hi' : i < 12 ? 'md' : 'lo';
+      p += '<div class="val-row">';
+      p += '<div class="val-rank' + rc + '">' + (i + 1) + '</div>';
+      p += '<div><div class="val-name">' + VALS[k].name + '</div>';
+      p += '<div class="val-def">' + VALS[k].def + '</div></div>';
+      p += '<div class="val-bar"><div class="val-fill ' + fc + '" style="width:' + Math.max(pct, 8) + '%"></div></div>';
+      p += '</div>';
+    }
+  });
+
+  // Page break before tensions
+  p += '<div class="page-break"></div>';
+
+  // Tensions
+  p += '<h2>Your Widest Tensions</h2>';
+  pairGaps.slice(0, 4).forEach(function(pg) {
+    p += '<div class="tension">';
+    p += '<div class="tension-pair">' + VALS[pg.winner].name + ' (#' + (ranked.indexOf(pg.winner) + 1) + ') vs ' + VALS[pg.loser].name + ' (#' + (ranked.indexOf(pg.loser) + 1) + ')</div>';
+    p += '<div class="tension-text">You lean toward ' + VALS[pg.winner].name.toLowerCase() + ' over ' + VALS[pg.loser].name.toLowerCase() + '. When has this trade-off cost you something you did not notice?</div>';
+    p += '</div>';
+  });
+
+  // Reflections
+  p += '<h2>Questions Worth Sitting With</h2>';
+  ranked.slice(0, 3).forEach(function(k) {
+    p += '<div class="reflect"><strong>' + VALS[k].name + ' (Top Value)</strong>';
+    p += '<p>' + reflections[k] + '</p></div>';
+  });
+  ranked.slice(-3).reverse().forEach(function(k) {
+    p += '<div class="reflect"><strong>' + VALS[k].name + ' (Lower Value)</strong>';
+    p += '<p>' + reflections[k] + '</p></div>';
+  });
+
+  // Footer
+  p += '<div class="foot">';
+  p += 'This is a self-reflection tool, not a psychological assessment or substitute for professional counseling.<br>';
+  p += 'Based on cross-cultural values research by Schwartz (1992, 2012) and the Welch-Bristol Values Inventory.<br>';
+  p += '&copy; Scaling Minds. All rights reserved. &middot; scalingminds.com</div>';
+  p += '<script>window.onload=function(){window.print();}<\/script>';
+  p += '</body></html>';
+
+  w.document.write(p);
+  w.document.close();
+}
+</script>
+</body>
+</html>
